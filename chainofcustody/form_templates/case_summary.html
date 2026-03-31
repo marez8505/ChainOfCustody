@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Case Summary — {{ case.case_number }}</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: "Times New Roman", Times, serif; font-size: 11pt; color: #000; background: #fff; }
+  @page { size: letter; margin: 0.75in; }
+  @media print { body { padding: 0; } .no-print { display: none !important; } }
+  .page { max-width: 7.5in; margin: 0 auto; padding: 0.5in; }
+  .classification-banner { text-align: center; font-size: 10pt; font-weight: bold; letter-spacing: 3px; border: 2px solid #000; padding: 4px 12px; display: inline-block; margin: 0 auto 12px; }
+  .doc-header { text-align: center; border-bottom: 3px double #000; padding-bottom: 12px; margin-bottom: 20px; }
+  .doc-header .agency-logo { font-size: 9pt; letter-spacing: 3px; text-transform: uppercase; color: #444; margin-bottom: 4px; }
+  .doc-header h1 { font-size: 17pt; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; }
+  .doc-header h2 { font-size: 13pt; font-weight: normal; margin-top: 4px; color: #333; }
+  .section-title { font-size: 11pt; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; border-left: 4px solid #000; padding-left: 8px; margin: 20px 0 10px; }
+  /* Stats bar */
+  .stats-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
+  .stat-box { border: 1px solid #ccc; padding: 10px; text-align: center; }
+  .stat-number { font-size: 24pt; font-weight: bold; line-height: 1; }
+  .stat-label { font-size: 8pt; text-transform: uppercase; color: #555; margin-top: 4px; letter-spacing: 0.5px; }
+  /* Case meta */
+  .meta-table { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
+  .meta-table td { padding: 5px 8px; border: 1px solid #ccc; vertical-align: top; font-size: 10.5pt; }
+  .meta-table td:first-child { width: 28%; font-weight: bold; background: #f5f5f5; }
+  /* Evidence inventory */
+  .evidence-table { width: 100%; border-collapse: collapse; font-size: 9pt; margin-bottom: 20px; }
+  .evidence-table th { background: #111; color: #fff; padding: 6px 8px; text-align: left; font-size: 8pt; text-transform: uppercase; letter-spacing: 0.5px; border: 1px solid #000; }
+  .evidence-table td { padding: 5px 8px; border: 1px solid #ccc; vertical-align: top; }
+  .evidence-table tr:nth-child(even) td { background: #f7f7f7; }
+  /* Status pills */
+  .status-pill { display: inline-block; font-size: 7.5pt; font-weight: bold; padding: 2px 6px; border-radius: 2px; letter-spacing: 0.5px; }
+  .s-IN_CUSTODY  { background: #d1e7dd; color: #0a3622; }
+  .s-CHECKED_OUT { background: #fff3cd; color: #664d03; }
+  .s-IN_ANALYSIS { background: #f8d7da; color: #58151c; }
+  .s-TRANSFERRED { background: #cfe2ff; color: #052c65; }
+  .s-DISPOSED    { background: #1a1a1a; color: #fff; }
+  /* Integrity overall */
+  .integrity-banner { padding: 12px 16px; border: 2px solid; text-align: center; margin-bottom: 20px; }
+  .int-clean     { border-color: #0a3622; background: #d1e7dd; color: #0a3622; }
+  .int-violation { border-color: #58151c; background: #f8d7da; color: #58151c; }
+  .int-chain     { border-color: #664d03; background: #fff3cd; color: #664d03; }
+  .integrity-banner .int-status { font-size: 14pt; font-weight: bold; letter-spacing: 2px; }
+  .integrity-banner .int-detail { font-size: 9pt; margin-top: 4px; }
+  /* Per-evidence integrity */
+  .ev-int-row { display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-bottom: 1px solid #eee; font-size: 9pt; }
+  .ev-int-row:last-child { border-bottom: none; }
+  .ev-int-num { font-weight: bold; width: 60px; }
+  .ev-int-desc { flex: 1; color: #333; }
+  .int-badge { display: inline-block; padding: 2px 8px; font-size: 7.5pt; font-weight: bold; border-radius: 2px; letter-spacing: 0.5px; }
+  .badge-ok   { background: #d1e7dd; color: #0a3622; border: 1px solid #0a3622; }
+  .badge-fail { background: #f8d7da; color: #58151c; border: 1px solid #58151c; }
+  .badge-warn { background: #fff3cd; color: #664d03; border: 1px solid #b8a200; }
+  /* Audit summary table */
+  .audit-table { width: 100%; border-collapse: collapse; font-size: 8.5pt; }
+  .audit-table th { background: #555; color: #fff; padding: 4px 6px; text-align: left; }
+  .audit-table td { padding: 3px 6px; border-bottom: 1px solid #eee; }
+  .audit-table tr:last-child td { border-bottom: none; }
+  /* Footer */
+  .doc-footer { margin-top: 24px; border-top: 1px solid #999; padding-top: 8px; display: flex; justify-content: space-between; font-size: 8pt; color: #666; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div style="text-align:center; margin-bottom:12px;">
+    <span class="classification-banner">{{ case.classification }}</span>
+  </div>
+
+  <div class="doc-header">
+    {% if case.agency %}<div class="agency-logo">{{ case.agency }}</div>{% endif %}
+    <h1>Case Summary Report</h1>
+    <h2>{{ case.case_number }} — {{ case.case_name }}</h2>
+  </div>
+
+  <!-- Stats Bar -->
+  <div class="stats-bar">
+    <div class="stat-box">
+      <div class="stat-number">{{ summary.evidence_count }}</div>
+      <div class="stat-label">Evidence Items</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-number">{{ summary.total_custody_events }}</div>
+      <div class="stat-label">Custody Events</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-number">{{ integrity_report.verified_count }}</div>
+      <div class="stat-label">Items Verified</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-number">{{ integrity_report.violation_count }}</div>
+      <div class="stat-label">Violations</div>
+    </div>
+  </div>
+
+  <!-- Overall Integrity Status -->
+  {% if integrity_report.overall_status == "CLEAN" %}
+  <div class="integrity-banner int-clean">
+    <div class="int-status">INTEGRITY VERIFIED</div>
+    <div class="int-detail">All evidence items verified — hash chains intact — no tampering detected</div>
+  </div>
+  {% elif integrity_report.overall_status == "CHAIN_BROKEN" %}
+  <div class="integrity-banner int-chain">
+    <div class="int-status">CHAIN OF CUSTODY BROKEN</div>
+    <div class="int-detail">Custody event hash chain mismatch detected — possible record deletion or modification</div>
+  </div>
+  {% else %}
+  <div class="integrity-banner int-violation">
+    <div class="int-status">INTEGRITY VIOLATIONS DETECTED</div>
+    <div class="int-detail">{{ integrity_report.violation_count }} evidence item(s) have hash mismatches or integrity failures</div>
+  </div>
+  {% endif %}
+
+  <!-- Case Information -->
+  <div class="section-title">Case Information</div>
+  <table class="meta-table">
+    <tr><td>Case Number</td><td>{{ case.case_number }}</td></tr>
+    <tr><td>Case Name</td><td>{{ case.case_name }}</td></tr>
+    <tr><td>Lead Examiner</td><td>{{ case.examiner_name }}{% if case.examiner_badge %} (Badge: {{ case.examiner_badge }}){% endif %}</td></tr>
+    <tr><td>Agency</td><td>{{ case.agency or "N/A" }}</td></tr>
+    <tr><td>Status</td><td>{{ case.status }}</td></tr>
+    <tr><td>Date Opened</td><td>{{ case.created_at | format_ts }}</td></tr>
+    <tr><td>Classification</td><td>{{ case.classification }}</td></tr>
+    {% if case.description %}<tr><td>Description</td><td>{{ case.description }}</td></tr>{% endif %}
+    {% if case.notes %}<tr><td>Notes</td><td>{{ case.notes }}</td></tr>{% endif %}
+  </table>
+
+  <!-- Evidence Inventory -->
+  <div class="section-title">Evidence Inventory</div>
+  <table class="evidence-table">
+    <thead>
+      <tr>
+        <th style="width:9%">Item #</th>
+        <th style="width:26%">Description</th>
+        <th style="width:13%">Type</th>
+        <th style="width:14%">Custodian</th>
+        <th style="width:11%">Status</th>
+        <th style="width:13%">Acquired</th>
+        <th style="width:14%">Integrity</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for ev in evidence_items %}
+      {% set ir = integrity_by_id.get(ev.evidence_id) %}
+      <tr>
+        <td style="text-align:center; font-weight:bold;">{{ ev.evidence_number }}</td>
+        <td>{{ ev.description }}</td>
+        <td>{{ ev.evidence_type }}</td>
+        <td>{{ ev.current_custodian }}</td>
+        <td><span class="status-pill s-{{ ev.status }}">{{ ev.status }}</span></td>
+        <td>{{ ev.acquisition_date | format_ts }}</td>
+        <td>
+          {% if ir %}
+            {% if ir.is_clean %}
+            <span class="int-badge badge-ok">VERIFIED</span>
+            {% else %}
+            <span class="int-badge badge-fail">VIOLATION</span>
+            {% endif %}
+          {% else %}
+          <span class="int-badge badge-warn">UNKNOWN</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <!-- Per-Evidence Integrity Details -->
+  <div class="section-title">Evidence Integrity Details</div>
+  <div style="border: 1px solid #ccc; margin-bottom: 20px;">
+    {% for result in integrity_report.evidence_results %}
+    <div class="ev-int-row">
+      <span class="ev-int-num">{{ result.evidence_number }}</span>
+      <span class="ev-int-desc">{{ result.description }}</span>
+      {% if result.is_clean %}
+      <span class="int-badge badge-ok">VERIFIED</span>
+      {% else %}
+      <span class="int-badge badge-fail">{{ result.violations | length }} violation(s)</span>
+      {% endif %}
+      {% if result.chain_valid %}
+      <span class="int-badge badge-ok">CHAIN OK</span>
+      {% else %}
+      <span class="int-badge badge-fail">CHAIN BROKEN</span>
+      {% endif %}
+      <span style="font-size:8pt; color:#666;">{{ result.event_count }} event(s)</span>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Violations Detail (if any) -->
+  {% if integrity_report.violation_count > 0 %}
+  <div class="section-title">Violation Details</div>
+  <div style="border: 2px solid #58151c; padding: 12px; background: #fff5f5; margin-bottom: 20px;">
+    {% for result in integrity_report.evidence_results %}
+    {% if not result.is_clean %}
+    <div style="margin-bottom: 10px;">
+      <strong>{{ result.evidence_number }} — {{ result.description }}</strong>
+      <ul style="margin: 4px 0 0 16px; font-size: 9.5pt; color: #58151c;">
+        {% for v in result.violations %}
+        <li>{{ v }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <!-- Recent Audit Activity (last 20 entries) -->
+  <div class="section-title">Recent Audit Activity</div>
+  <table class="audit-table">
+    <thead>
+      <tr>
+        <th style="width:20%">Timestamp (UTC)</th>
+        <th style="width:20%">Action</th>
+        <th style="width:15%">Entity Type</th>
+        <th style="width:45%">Details</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for entry in audit_entries[-20:] %}
+      <tr>
+        <td>{{ entry.timestamp | format_ts }}</td>
+        <td>{{ entry.action }}</td>
+        <td>{{ entry.entity_type }}</td>
+        <td style="font-size:8pt; font-family:monospace;">{{ entry.details or "—" }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <!-- Database Integrity -->
+  <div class="section-title">Database Integrity Snapshot</div>
+  <table class="meta-table">
+    <tr><td>Report Generated</td><td>{{ generated_at | format_ts }}</td></tr>
+    <tr><td>Database Hash (SHA-256)</td><td style="font-family:monospace; font-size:8.5pt; word-break:break-all;">{{ integrity_report.db_hash or "N/A" }}</td></tr>
+    <tr><td>Total Audit Entries</td><td>{{ audit_entries | length }}</td></tr>
+    <tr><td>Schema Version</td><td>{{ db_stats.schema_version }}</td></tr>
+    <tr><td>Database File Size</td><td>{{ db_stats.db_file_size_bytes | human_size }}</td></tr>
+  </table>
+
+  <div class="doc-footer">
+    <span>Case: {{ case.case_number }} | Generated: {{ generated_at | format_ts }}</span>
+    <span>ChainOfCustody v1.0 — Digital Evidence Management System</span>
+    <span>{{ case.classification }}</span>
+  </div>
+
+</div>
+</body>
+</html>

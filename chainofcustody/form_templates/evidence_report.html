@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Evidence Report — {{ evidence.evidence_number }}</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: "Times New Roman", Times, serif; font-size: 11pt; color: #000; background: #fff; }
+  @page { size: letter; margin: 0.75in; }
+  @media print { body { padding: 0; } .no-print { display: none !important; } }
+  .page { max-width: 7.5in; margin: 0 auto; padding: 0.5in; }
+  .doc-header { text-align: center; border-bottom: 3px solid #000; padding-bottom: 10px; margin-bottom: 16px; }
+  .doc-header .agency-logo { font-size: 9pt; letter-spacing: 2px; text-transform: uppercase; color: #333; margin-bottom: 4px; }
+  .doc-header h1 { font-size: 15pt; font-weight: bold; letter-spacing: 1px; text-transform: uppercase; }
+  .doc-header h2 { font-size: 11pt; font-weight: normal; margin-top: 4px; }
+  .classification-banner { text-align: center; font-size: 10pt; font-weight: bold; letter-spacing: 3px; border: 2px solid #000; padding: 4px 12px; display: inline-block; margin: 8px auto; }
+  .section-title { font-size: 11pt; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid #000; margin: 16px 0 8px; padding-bottom: 4px; }
+  .meta-table { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
+  .meta-table td { padding: 5px 8px; border: 1px solid #ccc; vertical-align: top; font-size: 10.5pt; }
+  .meta-table td:first-child { width: 28%; font-weight: bold; background: #f5f5f5; color: #333; }
+  .hash-block { font-family: "Courier New", Courier, monospace; font-size: 8.5pt; background: #f9f9f9; border: 1px solid #ccc; padding: 10px 12px; margin-bottom: 16px; }
+  .hash-row { display: flex; gap: 10px; padding: 3px 0; border-bottom: 1px dotted #ddd; }
+  .hash-row:last-child { border-bottom: none; }
+  .hash-label { width: 70px; font-weight: bold; flex-shrink: 0; color: #333; }
+  .hash-value { word-break: break-all; }
+  .custody-table { width: 100%; border-collapse: collapse; font-size: 9pt; margin-bottom: 16px; }
+  .custody-table th { background: #222; color: #fff; padding: 5px 6px; text-align: left; font-size: 8pt; text-transform: uppercase; border: 1px solid #000; }
+  .custody-table td { padding: 4px 6px; border: 1px solid #bbb; vertical-align: top; }
+  .custody-table tr:nth-child(even) td { background: #f7f7f7; }
+  .event-type { display: inline-block; font-size: 7pt; font-weight: bold; padding: 1px 5px; border-radius: 2px; background: #ddd; }
+  .event-ACQUISITION    { background: #d1e7dd; color: #0a3622; }
+  .event-TRANSFER       { background: #cfe2ff; color: #052c65; }
+  .event-CHECKOUT       { background: #fff3cd; color: #664d03; }
+  .event-RETURN         { background: #d1e7dd; color: #0a3622; }
+  .event-ANALYSIS_START { background: #f8d7da; color: #58151c; }
+  .event-ANALYSIS_END   { background: #d1e7dd; color: #0a3622; }
+  .event-VERIFICATION   { background: #e2d9f3; color: #2c0062; }
+  .event-STORAGE        { background: #cfe2ff; color: #052c65; }
+  .event-DISPOSAL       { background: #1a1a1a; color: #fff; }
+  .integrity-badge { display: inline-block; padding: 2px 8px; font-size: 8pt; font-weight: bold; border-radius: 2px; letter-spacing: 1px; }
+  .badge-clean     { background: #d1e7dd; color: #0a3622; border: 1px solid #0a3622; }
+  .badge-violation { background: #f8d7da; color: #58151c; border: 1px solid #58151c; }
+  .sig-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 8px; }
+  .sig-field { border-bottom: 1px solid #000; padding-bottom: 28px; margin-bottom: 4px; }
+  .sig-field-label { font-size: 8pt; text-transform: uppercase; color: #555; }
+  .doc-footer { margin-top: 20px; border-top: 1px solid #999; padding-top: 6px; display: flex; justify-content: space-between; font-size: 8pt; color: #666; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div style="text-align:center; margin-bottom:12px;">
+    <span class="classification-banner">{{ case.classification }}</span>
+  </div>
+
+  <div class="doc-header">
+    {% if case.agency %}<div class="agency-logo">{{ case.agency }}</div>{% endif %}
+    <h1>Digital Evidence Report</h1>
+    <h2>{{ evidence.evidence_number }} — {{ evidence.description }}</h2>
+  </div>
+
+  <!-- Case Reference -->
+  <div class="section-title">Case Reference</div>
+  <table class="meta-table">
+    <tr><td>Case Number</td><td>{{ case.case_number }}</td></tr>
+    <tr><td>Case Name</td><td>{{ case.case_name }}</td></tr>
+    <tr><td>Lead Examiner</td><td>{{ case.examiner_name }}{% if case.examiner_badge %} (Badge: {{ case.examiner_badge }}){% endif %}</td></tr>
+    <tr><td>Agency</td><td>{{ case.agency or "N/A" }}</td></tr>
+    <tr><td>Classification</td><td>{{ case.classification }}</td></tr>
+  </table>
+
+  <!-- Evidence Identification -->
+  <div class="section-title">Evidence Identification</div>
+  <table class="meta-table">
+    <tr><td>Evidence Number</td><td><strong>{{ evidence.evidence_number }}</strong></td></tr>
+    <tr><td>Evidence ID (UUID)</td><td style="font-family:monospace; font-size:9pt;">{{ evidence.evidence_id }}</td></tr>
+    <tr><td>Description</td><td>{{ evidence.description }}</td></tr>
+    <tr><td>Evidence Type</td><td>{{ evidence.evidence_type }}</td></tr>
+    <tr><td>Current Status</td><td>{{ evidence.status }}</td></tr>
+    <tr><td>Current Custodian</td><td><strong>{{ evidence.current_custodian }}</strong></td></tr>
+    <tr><td>Storage Location</td><td>{{ evidence.storage_location or "Not specified" }}</td></tr>
+    <tr><td>Registered</td><td>{{ evidence.created_at | format_ts }}</td></tr>
+  </table>
+
+  <!-- Acquisition Details -->
+  <div class="section-title">Acquisition Details</div>
+  <table class="meta-table">
+    <tr><td>Source Device</td><td>{{ evidence.source_device or "N/A" }}</td></tr>
+    <tr><td>Acquisition Method</td><td>{{ evidence.acquisition_method or "N/A" }}</td></tr>
+    <tr><td>Acquisition Date</td><td>{{ evidence.acquisition_date | format_ts }}</td></tr>
+    <tr><td>Original Location</td><td>{{ evidence.original_location or "N/A" }}</td></tr>
+    <tr><td>File Path (at acquisition)</td><td style="font-family:monospace; font-size:9pt;">{{ evidence.file_path or "N/A" }}</td></tr>
+    {% if evidence.file_size %}<tr><td>File Size</td><td>{{ evidence.file_size | human_size }}</td></tr>{% endif %}
+  </table>
+
+  <!-- Forensic Hashes -->
+  {% if evidence.md5_hash or evidence.sha1_hash or evidence.sha256_hash %}
+  <div class="section-title">Forensic Hash Values (Acquisition)</div>
+  <div class="hash-block">
+    <div style="margin-bottom:6px; font-size:9pt;">
+      These hash values were computed at the time of acquisition and serve as the authoritative
+      integrity baseline.  Any deviation from these values indicates evidence tampering or corruption.
+    </div>
+    {% if evidence.md5_hash %}
+    <div class="hash-row">
+      <span class="hash-label">MD5</span>
+      <span class="hash-value">{{ evidence.md5_hash }}</span>
+    </div>
+    {% endif %}
+    {% if evidence.sha1_hash %}
+    <div class="hash-row">
+      <span class="hash-label">SHA-1</span>
+      <span class="hash-value">{{ evidence.sha1_hash }}</span>
+    </div>
+    {% endif %}
+    {% if evidence.sha256_hash %}
+    <div class="hash-row">
+      <span class="hash-label">SHA-256</span>
+      <span class="hash-value">{{ evidence.sha256_hash }}</span>
+    </div>
+    {% endif %}
+  </div>
+  {% endif %}
+
+  <!-- Integrity Status -->
+  <div class="section-title">Current Integrity Status</div>
+  <table class="meta-table">
+    <tr>
+      <td>Hash Verification</td>
+      <td>
+        {% if integrity_result.hash_verified %}
+        <span class="integrity-badge badge-clean">VERIFIED — All hashes match acquisition values</span>
+        {% elif integrity_result.file_path %}
+        <span class="integrity-badge badge-violation">INTEGRITY VIOLATION — Hash mismatch detected</span>
+        {% else %}
+        <span class="integrity-badge" style="background:#e2e3e5; color:#383d41; border:1px solid #999;">NOT CHECKED — No file path available</span>
+        {% endif %}
+      </td>
+    </tr>
+    <tr>
+      <td>Chain of Custody</td>
+      <td>
+        {% if integrity_result.chain_valid %}
+        <span class="integrity-badge badge-clean">VALID — Hash chain intact ({{ integrity_result.event_count }} events)</span>
+        {% else %}
+        <span class="integrity-badge badge-violation">CHAIN BROKEN — Tampered or deleted event detected</span>
+        {% endif %}
+      </td>
+    </tr>
+    {% if integrity_result.violations %}
+    <tr>
+      <td>Violations</td>
+      <td>
+        <ul style="margin:0; padding-left:16px; color:#58151c; font-size:9.5pt;">
+          {% for v in integrity_result.violations %}
+          <li>{{ v }}</li>
+          {% endfor %}
+        </ul>
+      </td>
+    </tr>
+    {% endif %}
+  </table>
+
+  <!-- Chain of Custody -->
+  <div class="section-title">Complete Chain of Custody</div>
+  {% if custody_events %}
+  <table class="custody-table">
+    <thead>
+      <tr>
+        <th style="width:5%">#</th>
+        <th style="width:16%">Date / Time (UTC)</th>
+        <th style="width:12%">Event</th>
+        <th style="width:14%">From</th>
+        <th style="width:14%">To</th>
+        <th style="width:14%">Location</th>
+        <th style="width:25%">Reason / Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for event in custody_events %}
+      <tr>
+        <td style="text-align:center;">{{ loop.index }}</td>
+        <td>{{ event.timestamp | format_ts }}</td>
+        <td><span class="event-type event-{{ event.event_type }}">{{ event.event_type }}</span></td>
+        <td>{{ event.from_custodian or "—" }}</td>
+        <td>{{ event.to_custodian or "—" }}</td>
+        <td>{{ event.location or "—" }}</td>
+        <td>
+          {{ event.reason }}
+          {% if event.notes %}<br><em style="font-size:8pt; color:#555;">{{ event.notes }}</em>{% endif %}
+          {% if event.hash_verified is not none %}
+          <br>
+          {% if event.hash_verified %}
+          <span class="integrity-badge badge-clean" style="font-size:7pt;">HASH OK</span>
+          {% else %}
+          <span class="integrity-badge badge-violation" style="font-size:7pt;">HASH FAIL</span>
+          {% endif %}
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p style="font-style:italic; color:#666;">No custody events on record.</p>
+  {% endif %}
+
+  <!-- Signature -->
+  <div style="border:1px solid #000; padding:12px; margin-top:16px;">
+    <div style="font-size:10pt; font-weight:bold; text-transform:uppercase; margin-bottom:10px; border-bottom:1px solid #ccc; padding-bottom:6px;">Examiner Certification</div>
+    <p style="font-size:9pt; margin-bottom:16px;">I certify that the evidence described in this report was collected, handled, and stored in accordance with established forensic procedures and applicable federal guidelines.</p>
+    <div class="sig-grid">
+      <div>
+        <div class="sig-field"></div>
+        <div class="sig-field-label">Examiner Signature / Date</div>
+        <div style="font-size:9pt; margin-top:4px;">{{ case.examiner_name }}</div>
+      </div>
+      <div>
+        <div class="sig-field"></div>
+        <div class="sig-field-label">Supervisor Signature / Date</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="doc-footer">
+    <span>{{ case.case_number }} | {{ evidence.evidence_number }} | Generated: {{ generated_at | format_ts }}</span>
+    <span>ChainOfCustody v1.0</span>
+    <span>{{ case.classification }}</span>
+  </div>
+
+</div>
+</body>
+</html>

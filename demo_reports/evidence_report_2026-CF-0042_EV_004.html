@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Evidence Report — EV-004</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: "Times New Roman", Times, serif; font-size: 11pt; color: #000; background: #fff; }
+  @page { size: letter; margin: 0.75in; }
+  @media print { body { padding: 0; } .no-print { display: none !important; } }
+  .page { max-width: 7.5in; margin: 0 auto; padding: 0.5in; }
+  .doc-header { text-align: center; border-bottom: 3px solid #000; padding-bottom: 10px; margin-bottom: 16px; }
+  .doc-header .agency-logo { font-size: 9pt; letter-spacing: 2px; text-transform: uppercase; color: #333; margin-bottom: 4px; }
+  .doc-header h1 { font-size: 15pt; font-weight: bold; letter-spacing: 1px; text-transform: uppercase; }
+  .doc-header h2 { font-size: 11pt; font-weight: normal; margin-top: 4px; }
+  .classification-banner { text-align: center; font-size: 10pt; font-weight: bold; letter-spacing: 3px; border: 2px solid #000; padding: 4px 12px; display: inline-block; margin: 8px auto; }
+  .section-title { font-size: 11pt; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid #000; margin: 16px 0 8px; padding-bottom: 4px; }
+  .meta-table { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
+  .meta-table td { padding: 5px 8px; border: 1px solid #ccc; vertical-align: top; font-size: 10.5pt; }
+  .meta-table td:first-child { width: 28%; font-weight: bold; background: #f5f5f5; color: #333; }
+  .hash-block { font-family: "Courier New", Courier, monospace; font-size: 8.5pt; background: #f9f9f9; border: 1px solid #ccc; padding: 10px 12px; margin-bottom: 16px; }
+  .hash-row { display: flex; gap: 10px; padding: 3px 0; border-bottom: 1px dotted #ddd; }
+  .hash-row:last-child { border-bottom: none; }
+  .hash-label { width: 70px; font-weight: bold; flex-shrink: 0; color: #333; }
+  .hash-value { word-break: break-all; }
+  .custody-table { width: 100%; border-collapse: collapse; font-size: 9pt; margin-bottom: 16px; }
+  .custody-table th { background: #222; color: #fff; padding: 5px 6px; text-align: left; font-size: 8pt; text-transform: uppercase; border: 1px solid #000; }
+  .custody-table td { padding: 4px 6px; border: 1px solid #bbb; vertical-align: top; }
+  .custody-table tr:nth-child(even) td { background: #f7f7f7; }
+  .event-type { display: inline-block; font-size: 7pt; font-weight: bold; padding: 1px 5px; border-radius: 2px; background: #ddd; }
+  .event-ACQUISITION    { background: #d1e7dd; color: #0a3622; }
+  .event-TRANSFER       { background: #cfe2ff; color: #052c65; }
+  .event-CHECKOUT       { background: #fff3cd; color: #664d03; }
+  .event-RETURN         { background: #d1e7dd; color: #0a3622; }
+  .event-ANALYSIS_START { background: #f8d7da; color: #58151c; }
+  .event-ANALYSIS_END   { background: #d1e7dd; color: #0a3622; }
+  .event-VERIFICATION   { background: #e2d9f3; color: #2c0062; }
+  .event-STORAGE        { background: #cfe2ff; color: #052c65; }
+  .event-DISPOSAL       { background: #1a1a1a; color: #fff; }
+  .integrity-badge { display: inline-block; padding: 2px 8px; font-size: 8pt; font-weight: bold; border-radius: 2px; letter-spacing: 1px; }
+  .badge-clean     { background: #d1e7dd; color: #0a3622; border: 1px solid #0a3622; }
+  .badge-violation { background: #f8d7da; color: #58151c; border: 1px solid #58151c; }
+  .sig-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 8px; }
+  .sig-field { border-bottom: 1px solid #000; padding-bottom: 28px; margin-bottom: 4px; }
+  .sig-field-label { font-size: 8pt; text-transform: uppercase; color: #555; }
+  .doc-footer { margin-top: 20px; border-top: 1px solid #999; padding-top: 6px; display: flex; justify-content: space-between; font-size: 8pt; color: #666; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div style="text-align:center; margin-bottom:12px;">
+    <span class="classification-banner">UNCLASSIFIED</span>
+  </div>
+
+  <div class="doc-header">
+<div class="agency-logo">FBI CART (Computer Analysis and Response Team)</div>    <h1>Digital Evidence Report</h1>
+    <h2>EV-004 — iPhone 13 Pro — UFED Cellebrite Full File System Extraction</h2>
+  </div>
+
+  <!-- Case Reference -->
+  <div class="section-title">Case Reference</div>
+  <table class="meta-table">
+    <tr><td>Case Number</td><td>2026-CF-0042</td></tr>
+    <tr><td>Case Name</td><td>Operation Dark Web</td></tr>
+    <tr><td>Lead Examiner</td><td>Edward Marez (Badge: FBI-7741)</td></tr>
+    <tr><td>Agency</td><td>FBI CART (Computer Analysis and Response Team)</td></tr>
+    <tr><td>Classification</td><td>UNCLASSIFIED</td></tr>
+  </table>
+
+  <!-- Evidence Identification -->
+  <div class="section-title">Evidence Identification</div>
+  <table class="meta-table">
+    <tr><td>Evidence Number</td><td><strong>EV-004</strong></td></tr>
+    <tr><td>Evidence ID (UUID)</td><td style="font-family:monospace; font-size:9pt;">3fc4eeb4-4616-40b7-82fc-d250ac657363</td></tr>
+    <tr><td>Description</td><td>iPhone 13 Pro — UFED Cellebrite Full File System Extraction</td></tr>
+    <tr><td>Evidence Type</td><td>MOBILE_EXTRACT</td></tr>
+    <tr><td>Current Status</td><td>IN_CUSTODY</td></tr>
+    <tr><td>Current Custodian</td><td><strong>Edward Marez</strong></td></tr>
+    <tr><td>Storage Location</td><td>FBI CART Secure Evidence Vault — Climate Controlled</td></tr>
+    <tr><td>Registered</td><td>2026-03-31 17:13:11 UTC</td></tr>
+  </table>
+
+  <!-- Acquisition Details -->
+  <div class="section-title">Acquisition Details</div>
+  <table class="meta-table">
+    <tr><td>Source Device</td><td>Apple iPhone 13 Pro, IMEI: 358240051111110, S/N: DNQXYZ123456</td></tr>
+    <tr><td>Acquisition Method</td><td>Cellebrite UFED 4PC v7.69.0.150 — Full File System</td></tr>
+    <tr><td>Acquisition Date</td><td>2026-03-31 17:13:11 UTC</td></tr>
+    <tr><td>Original Location</td><td>Subject&#39;s person at time of arrest — John Doe DOB: 1990-01-01</td></tr>
+    <tr><td>File Path (at acquisition)</td><td style="font-family:monospace; font-size:9pt;">/tmp/coc_demo_600ue6sh/cellebrite_iphone13.ufdr</td></tr>
+<tr><td>File Size</td><td>512.00 KB</td></tr>  </table>
+
+  <!-- Forensic Hashes -->
+  <div class="section-title">Forensic Hash Values (Acquisition)</div>
+  <div class="hash-block">
+    <div style="margin-bottom:6px; font-size:9pt;">
+      These hash values were computed at the time of acquisition and serve as the authoritative
+      integrity baseline.  Any deviation from these values indicates evidence tampering or corruption.
+    </div>
+    <div class="hash-row">
+      <span class="hash-label">MD5</span>
+      <span class="hash-value">03e3e19b420efd2f30c662412baa21d2</span>
+    </div>
+    <div class="hash-row">
+      <span class="hash-label">SHA-1</span>
+      <span class="hash-value">e6d171a6215c8941cdb3bb2458a26ac672b09fae</span>
+    </div>
+    <div class="hash-row">
+      <span class="hash-label">SHA-256</span>
+      <span class="hash-value">008d44a56d9a69af10501b69a31a1d476589ffe783d88e4a0450801466619e52</span>
+    </div>
+  </div>
+
+  <!-- Integrity Status -->
+  <div class="section-title">Current Integrity Status</div>
+  <table class="meta-table">
+    <tr>
+      <td>Hash Verification</td>
+      <td>
+        <span class="integrity-badge badge-clean">VERIFIED — All hashes match acquisition values</span>
+      </td>
+    </tr>
+    <tr>
+      <td>Chain of Custody</td>
+      <td>
+        <span class="integrity-badge badge-clean">VALID — Hash chain intact (6 events)</span>
+      </td>
+    </tr>
+  </table>
+
+  <!-- Chain of Custody -->
+  <div class="section-title">Complete Chain of Custody</div>
+  <table class="custody-table">
+    <thead>
+      <tr>
+        <th style="width:5%">#</th>
+        <th style="width:16%">Date / Time (UTC)</th>
+        <th style="width:12%">Event</th>
+        <th style="width:14%">From</th>
+        <th style="width:14%">To</th>
+        <th style="width:14%">Location</th>
+        <th style="width:25%">Reason / Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="text-align:center;">1</td>
+        <td>2026-03-31 17:13:11 UTC</td>
+        <td><span class="event-type event-ACQUISITION">ACQUISITION</span></td>
+        <td>—</td>
+        <td>Edward Marez</td>
+        <td>FBI Field Office — Digital Forensics Lab, Room 114</td>
+        <td>
+          Initial forensic acquisition of EV-004 per search warrant #26-1234
+        </td>
+      </tr>
+      <tr>
+        <td style="text-align:center;">2</td>
+        <td>2026-03-31 17:13:11 UTC</td>
+        <td><span class="event-type event-CHECKOUT">CHECKOUT</span></td>
+        <td>Edward Marez</td>
+        <td>Special Agent Liu Wei</td>
+        <td>FBI CART Lab — Mobile Analysis Station</td>
+        <td>
+          Mobile device analysis — cryptocurrency wallet, messaging apps, GPS data
+        </td>
+      </tr>
+      <tr>
+        <td style="text-align:center;">3</td>
+        <td>2026-03-31 17:13:11 UTC</td>
+        <td><span class="event-type event-ANALYSIS_START">ANALYSIS_START</span></td>
+        <td>—</td>
+        <td>Special Agent Liu Wei</td>
+        <td>FBI CART Lab — Mobile Analysis Station</td>
+        <td>
+          Cellebrite Physical Analyzer — full artifact extraction from UFDR
+        </td>
+      </tr>
+      <tr>
+        <td style="text-align:center;">4</td>
+        <td>2026-03-31 17:13:11 UTC</td>
+        <td><span class="event-type event-ANALYSIS_END">ANALYSIS_END</span></td>
+        <td>Special Agent Liu Wei</td>
+        <td>—</td>
+        <td>FBI CART Lab — Mobile Analysis Station</td>
+        <td>
+          Mobile analysis complete — 47 BTC transactions identified, 1,200+ messages extracted
+        </td>
+      </tr>
+      <tr>
+        <td style="text-align:center;">5</td>
+        <td>2026-03-31 17:13:11 UTC</td>
+        <td><span class="event-type event-RETURN">RETURN</span></td>
+        <td>Special Agent Liu Wei</td>
+        <td>Edward Marez</td>
+        <td>FBI CART Evidence Locker A, Shelf 4, Bay 1</td>
+        <td>
+          Evidence returned to primary custodian after mobile analysis
+        </td>
+      </tr>
+      <tr>
+        <td style="text-align:center;">6</td>
+        <td>2026-03-31 17:13:11 UTC</td>
+        <td><span class="event-type event-STORAGE">STORAGE</span></td>
+        <td>Edward Marez</td>
+        <td>Edward Marez</td>
+        <td>FBI CART Secure Evidence Vault — Climate Controlled</td>
+        <td>
+          Long-term secure storage pending trial — case #2026-CF-0042
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Signature -->
+  <div style="border:1px solid #000; padding:12px; margin-top:16px;">
+    <div style="font-size:10pt; font-weight:bold; text-transform:uppercase; margin-bottom:10px; border-bottom:1px solid #ccc; padding-bottom:6px;">Examiner Certification</div>
+    <p style="font-size:9pt; margin-bottom:16px;">I certify that the evidence described in this report was collected, handled, and stored in accordance with established forensic procedures and applicable federal guidelines.</p>
+    <div class="sig-grid">
+      <div>
+        <div class="sig-field"></div>
+        <div class="sig-field-label">Examiner Signature / Date</div>
+        <div style="font-size:9pt; margin-top:4px;">Edward Marez</div>
+      </div>
+      <div>
+        <div class="sig-field"></div>
+        <div class="sig-field-label">Supervisor Signature / Date</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="doc-footer">
+    <span>2026-CF-0042 | EV-004 | Generated: 2026-03-31 17:13:11 UTC</span>
+    <span>ChainOfCustody v1.0</span>
+    <span>UNCLASSIFIED</span>
+  </div>
+
+</div>
+</body>
+</html>
